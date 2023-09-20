@@ -174,3 +174,5 @@ dist
 # build artifact
 linear-epic
 *bun-build
+
+*.tsbuildinfo

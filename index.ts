@@ -81,49 +81,50 @@ const createIssue = async (
   return issue.id;
 };
 
-console.log("Creating:");
-console.log("  parent");
 const parentId = await createIssue(initiativeTitle, [
   componentId,
   INITIATIVE_LABEL_UUID,
 ]);
-console.log("    done!");
-
-console.log("  children");
 
 const childIds = await Promise.all(
-  childTasks.map(async ({ name }, index) => {
+  childTasks.map(async ({ name }) => {
     const id = await createIssue(name, [componentId], parentId);
-    console.log(`    finished child@${index}`);
+
     return id;
   })
 );
 
-console.log("  blockers");
+type Block = [blocker: string, blocked: string];
 
-const createBlocks = async (
-  task: string,
-  blockedBy: string[]
-): Promise<void> => {
-  for (const blockingId of blockedBy) {
-    await linear.createIssueRelation({
-      issueId: blockingId,
-      type: LinearDocument.IssueRelationType.Blocks,
-      relatedIssueId: task,
-    });
-    console.log(`      finished ${blockingId}`);
-  }
+const createBlocks = async (blocks: Block[]): Promise<unknown> => {
+  return await Promise.allSettled(
+    blocks.map(async ([blocker, blocked]) => {
+      await linear.createIssueRelation({
+        issueId: blocker,
+        type: LinearDocument.IssueRelationType.Blocks,
+        relatedIssueId: blocked,
+      });
+    })
+  );
 };
 
-console.log("    all against parent");
-await createBlocks(parentId, childIds);
+const createBlockRecords = (blockers: string[], blocked: string): Block[] =>
+  blockers.map((blocker) => [blocker, blocked]);
 
-for (const [index, { blockedBy }] of childTasks.entries()) {
-  if (blockedBy.length > 0) {
-    console.log(`    for task@${index}`);
-    await createBlocks(
-      childIds[index],
-      blockedBy.map((i) => childIds[i])
-    );
-  }
-}
+const blocks: Block[] = [
+  // all children block parent
+  ...createBlockRecords(childIds, parentId),
+  // register any manual blockers
+  ...[...childTasks.entries()]
+    .map(([index, { blockedBy }]) =>
+      blockedBy.length > 0
+        ? createBlockRecords(
+            blockedBy.map((i) => childIds[i]),
+            childIds[index]
+          )
+        : []
+    )
+    .flat(),
+];
+
+await createBlocks(blocks);
