@@ -176,3 +176,6 @@ linear-epic
 *bun-build
 
 *.tsbuildinfo
+lib
+# TODO: remove
+bun.lockb
