@@ -28,12 +28,16 @@ const main = async (): Promise<void> => {
 
   const initiativeTitle = await ask("What's the initiative called?");
   const componentId = await askComponent(linear);
+  const labels = [componentId].filter(Boolean);
 
-  const initiativeId = await createIssue(initiativeTitle, [
-    componentId,
-    // `Initiative` label
-    "5168e61c-b1df-48c8-a7d7-e11670ef2a97",
-  ]);
+  const initiativeId = await createIssue(
+    initiativeTitle,
+    [
+      ...labels,
+      // `Initiative` label
+      "5168e61c-b1df-48c8-a7d7-e11670ef2a97",
+    ].filter(Boolean)
+  );
 
   const subtasks = await askSubtasks();
 
@@ -43,7 +47,7 @@ const main = async (): Promise<void> => {
   );
   const subtaskIds = await Promise.all(
     subtasks.map(async ({ name }) => {
-      const id = await createIssue(name, [componentId], initiativeId);
+      const id = await createIssue(name, labels, initiativeId);
       issueCreationProgress.increment();
       return id;
     })

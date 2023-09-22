@@ -17,6 +17,7 @@ const getComponents = async (
     a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
   ); // might be able to use `.toSorted` w/ bun directly; supported in node 20
 
+  components.push({ name: "None", value: "" });
   return components;
 };
 
