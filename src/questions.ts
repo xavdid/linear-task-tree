@@ -1,8 +1,19 @@
-import { checkbox, confirm, input, select } from "@inquirer/prompts";
+import {
+  confirm as _confirm,
+  checkbox,
+  input,
+  select,
+} from "@inquirer/prompts";
 import type { LinearClient } from "@linear/sdk";
 
 export const ask = async (message: string): Promise<string> => {
   return await input({ message });
+};
+export const confirm = async (
+  message: string,
+  defaultAnswer = true
+): Promise<boolean> => {
+  return await _confirm({ message, default: defaultAnswer });
 };
 
 const getComponents = async (
@@ -71,7 +82,7 @@ export const askSubtasks = async (): Promise<
       });
     }
     childTasks.push({ name, blockedBy });
-  } while (await confirm({ message: "Add more?" }));
+  } while (await confirm("Add more?"));
 
   return childTasks;
 };
