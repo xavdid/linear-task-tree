@@ -28,3 +28,8 @@ output := "linear-epic"
 
 @lint:
     yarn eslint src
+
+# install dependencies
+@install:
+    # bun install
+    yarn install

@@ -2,7 +2,11 @@
 
 A script to create a parent task and many subtasks in [Linear](https://linear.app/).
 
-> note: Currently hardcodes data about my workspace, so it won't be widely useful yet.
+> note: this is mostly for personal use so you won't be able to run it directly. Might be useful for learning though!
+
+## Structure
+
+Running this script gives you a single parent task and 1+ subtasks. Each subtask can declare blockers on other tasks. They'll all share a status and label.
 
 ## Motivation
 
@@ -36,20 +40,28 @@ the projects view is much less useful:
 
 So I get nearly everything I need from parent issues, except for having to check their status and manually start/close them when their children are done.
 
+### Advent of Code
+
+This also includes a script to create a bunch of tasks for [Advent of Code](https://adventofcode.com/) following the above structure.
+
 ## Development:
 
-> note: this doesn't actually work with bun yet; ignore the following for now
+Development tasks are run using [just](https://github.com/casey/just).
 
 To install dependencies:
 
 ```bash
-bun install
+just install
+```
+
+To compile the code for use during development:
+
+```bash
+just dev
 ```
 
 To run:
 
 ```bash
-bun run index.ts
+just run
 ```
-
-This project was created using `bun init` in bun v1.0.2. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
