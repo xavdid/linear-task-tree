@@ -65,3 +65,9 @@ To run:
 ```bash
 just run
 ```
+
+To run the Advent of Code script:
+
+```bash
+just aoc
+```
