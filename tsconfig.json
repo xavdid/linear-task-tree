@@ -1,38 +1,22 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./lib",
-    // suggested defaults: https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
-    "module": "commonjs",
-    "target": "es2018",
-    "lib": ["es2018"],
+    "lib": ["ESNext"],
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "composite": true,
     "strict": true,
-    "esModuleInterop": true
-    // "jsx": "react"
-    // "declaration": true
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "types": [
+      "bun-types" // add Bun global
+    ]
   }
 }
-
-// bun config:
-// {
-//   "compilerOptions": {
-//     "lib": ["ESNext"],
-//     "module": "esnext",
-//     "target": "esnext",
-//     "moduleResolution": "bundler",
-//     "moduleDetection": "force",
-//     "allowImportingTsExtensions": true,
-//     "noEmit": true,
-//     "composite": true,
-//     "strict": true,
-//     "downlevelIteration": true,
-//     "skipLibCheck": true,
-//     "jsx": "react-jsx",
-//     "allowSyntheticDefaultImports": true,
-//     "forceConsistentCasingInFileNames": true,
-//     "allowJs": true,
-//     "types": [
-//       "bun-types" // add Bun global
-//     ]
-//   }
-// }
