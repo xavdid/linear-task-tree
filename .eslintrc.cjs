@@ -7,8 +7,4 @@ module.exports = {
   parserOptions: {
     project: `${__dirname}/tsconfig.json`,
   },
-  rules: {
-    // disable rules individually as needed
-    // "@typescript-eslint/explicit-function-return-type": 0,
-  },
 };

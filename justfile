@@ -1,35 +1,41 @@
+# run installed node_modules without prefix
+export PATH := "./node_modules/.bin:" + env_var('PATH')
+
 output := "linear-epic"
+symlink := env_var("HOME") / "bin" / output
 
 @_default:
     just --list
 
 # run the dev version of the program
 @run:
-    # bun run src/index.ts
-    node lib/index.js
+    bun run src/index.ts
 
-# run the Advent of Code generation script for this year
+# run the Advent of Code generation script for this calendar year
 @aoc:
-    # bun run src/aoc.ts
-    node lib/aoc.js
+    bun run src/aoc.ts
 
-# create a build artifact - either a single binary or the `lib` directory
-@build:
-    # bun build --compile ./index.ts --outfile {{ output }}
-    yarn tsc
+# create a build artifact
+@build: lint
+    bun build --compile src/index.ts --outfile {{ output }}
 
-# run the dev watch server. Only required when using node directly
-@dev:
-    yarn tsc --watch
+# create a symlink to the ~/bin if it doesn't exist
+link: build
+    #!/usr/bin/env sh
+    if {{ if path_exists(symlink) != "true" { "true" } else { "false" } }}; then
+        ln -s "$(pwd)/{{ output }}" ~/bin
+    else
+        echo "already exists"
+    fi
 
 # remove build outputs and side effects
 @clean:
-    rm -f .*bun-build {{ output }} *.js *.d.ts *.tsbuildinfo lib
+    rm -rf .*bun-build *.js *.d.ts *.tsbuildinfo lib
 
 @lint:
-    yarn eslint src
+    tsc
+    eslint src
 
-# install dependencies
+# install dependencies loocally
 @install:
-    # bun install
-    yarn install
+    bun install
