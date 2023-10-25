@@ -1,7 +1,7 @@
 # run installed node_modules without prefix
 export PATH := "./node_modules/.bin:" + env_var('PATH')
 
-output := "linear-epic"
+output := "linear-task-tree"
 symlink := env_var("HOME") / "bin" / output
 
 @_default:
@@ -20,9 +20,10 @@ symlink := env_var("HOME") / "bin" / output
     bun build --compile src/index.ts --outfile {{ output }}
 
 # create a symlink to the ~/bin if it doesn't exist
-link: build
+link:
     #!/usr/bin/env sh
     if {{ if path_exists(symlink) != "true" { "true" } else { "false" } }}; then
+        just build
         ln -s "$(pwd)/{{ output }}" ~/bin
     else
         echo "already exists"

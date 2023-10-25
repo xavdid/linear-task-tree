@@ -172,10 +172,8 @@ dist
 .idea
 
 # build artifact
-linear-epic
+linear-task-tree
 *bun-build
 
 *.tsbuildinfo
 lib
-# TODO: remove
-bun.lockb
