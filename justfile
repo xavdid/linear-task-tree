@@ -15,9 +15,10 @@ symlink := env_var("HOME") / "bin" / output
 @aoc:
     bun run src/aoc.ts
 
-# create a build artifact
-@build: lint
-    bun build --compile src/index.ts --outfile {{ output }}
+# compile for release and move to a directory
+@build dest="~/bin/":
+  bun build --compile src/index.ts --outfile {{output}}
+  cp {{output}} {{dest}}
 
 # create a symlink to the ~/bin if it doesn't exist
 link:
