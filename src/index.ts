@@ -1,56 +1,31 @@
-// doesn't work with bun yet, https://github.com/oven-sh/bun/issues/4787
+import { program } from "@commander-js/extra-typings";
+import addCmd from "./commands/add";
+import aocCmd from "./commands/aoc";
+import { parseCsv } from "./utils/taskheat";
 
-import {
-  LABEL_IDS,
-  createBlockRecords,
-  setup,
-  type BlockRecord,
-} from "./linear";
-import { startProgressBar } from "./progressBar";
-import { ask, askSubtasks } from "./questions";
+program
+  .name("linear-task-tree")
+  .description("Create dependent trees of tasks in Linear")
+  .version();
 
-const { createIssue, createBlockingRelationships, askComponent } =
-  await setup();
+program
+  .command("add")
+  .description("add a new task tree under an initiative")
+  .action(async () => {
+    // gets a wrapper because it has optional args that i'm not passing here
+    await addCmd();
+  });
+program
+  .command("aoc")
+  .description("build the whole AoC task tree for this calendar year")
+  .action(aocCmd);
+program
+  .command("import")
+  .argument("<path>", "the path to a TaskHeat CSV file")
+  .description("import a project from TaskHeat")
+  .action(async (path) => {
+    const subtasks = await parseCsv(path);
+    await addCmd(subtasks);
+  });
 
-const initiativeTitle = await ask("What's the initiative called?");
-const componentId = await askComponent();
-const labels = [componentId].filter(Boolean);
-
-const initiativeId = await createIssue(
-  initiativeTitle,
-  [...labels, LABEL_IDS.initiative].filter(Boolean)
-);
-
-const subtasks = await askSubtasks();
-
-const issueCreationProgress = startProgressBar(
-  "Creating subtasks",
-  subtasks.length
-);
-const subtaskIds = await Promise.all(
-  subtasks.map(async ({ name }) => {
-    const id = await createIssue(name, labels, { parentId: initiativeId });
-    issueCreationProgress.increment();
-    return id;
-  })
-);
-issueCreationProgress.stop();
-
-const blocks: BlockRecord[] = [...subtasks.entries()]
-  // iterate subtasks and their indexes
-  .map(([index, { blockedBy }]) =>
-    // if there are blockers
-    blockedBy.length > 0
-      ? // register each
-        createBlockRecords(
-          blockedBy.map((i) => subtaskIds[i]),
-          subtaskIds[index]
-        )
-      : []
-  )
-  // flatten 1 level
-  .flat();
-
-await createBlockingRelationships(blocks);
-
-console.log(`done! Created "${initiativeTitle}" and its subtasks + blockers.`);
+await program.parseAsync();

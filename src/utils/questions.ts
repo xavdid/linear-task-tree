@@ -60,12 +60,16 @@ export const getStateId = async (): Promise<string> =>
 
 // ---
 
+export interface Subtask {
+  name: string;
+  blockedBy: number[];
+  description?: string;
+}
+
 /**
  * repeatedly get title of subtasks and note blockers
  */
-export const askSubtasks = async (): Promise<
-  Array<{ name: string; blockedBy: number[] }>
-> => {
+export const askSubtasks = async (): Promise<Subtask[]> => {
   const childTasks: Array<{ name: string; blockedBy: number[] }> = [];
 
   do {

@@ -12,7 +12,11 @@ const _createIssue = async (
   stateId: string,
   title: string,
   labelIds: string[],
-  { parentId, dueDate }: { parentId?: string; dueDate?: string } = {}
+  {
+    parentId,
+    dueDate,
+    description,
+  }: { parentId?: string; dueDate?: string; description?: string } = {}
 ): Promise<string> => {
   const task = await linear.createIssue({
     title,
@@ -21,6 +25,7 @@ const _createIssue = async (
     stateId,
     teamId: "ef1f6c06-ac0f-4907-ae49-9d0a3352d2a0",
     dueDate,
+    description,
   });
   const issue = await task.issue;
   if (!issue) {
@@ -58,7 +63,7 @@ export const setup = async (
   createIssue: (
     title: string,
     labelIds: string[],
-    options?: { parentId?: string; dueDate?: string }
+    options?: { parentId?: string; dueDate?: string; description?: string }
   ) => Promise<string>;
   createBlockingRelationships: (blocks: BlockRecord[]) => Promise<void>;
   askComponent: () => Promise<string>;
@@ -68,8 +73,6 @@ export const setup = async (
     throw new Error("expected `LINEAR_API_KEY to be defined in environment");
   }
   const linear = new LinearClient({ apiKey: process.env.LINEAR_API_KEY });
-
-  // my linear team
 
   // all tasks are put into this state
   if (!stateId) {
@@ -90,6 +93,9 @@ export const setup = async (
 
 export type BlockRecord = [blocker: string, blocked: string];
 
+/**
+ * given a number of blockers for a single task, create a list of pairs describing the blocker => blocked relationship
+ */
 export const createBlockRecords = (
   blockers: string[],
   blocked: string
