@@ -12,14 +12,10 @@ symlink := env_var("HOME") / "bin" / output
 @run *options:
     bun run src/index.ts {{ options }}
 
-# run the Advent of Code generation script for this calendar year
-@aoc:
-    bun run src/aoc.ts
-
 # compile for release and move to a directory
 @build dest="~/bin/":
   bun build --compile src/index.ts --outfile {{output}}
-  cp {{output}} {{dest}}
+  mv {{output}} {{dest}}
 
 # remove build outputs and side effects
 @clean:
