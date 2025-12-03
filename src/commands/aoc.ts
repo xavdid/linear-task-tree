@@ -4,6 +4,9 @@ import { LABEL_IDS, setup, type BlockRecord } from "../utils/linear";
 import { startProgressBar } from "../utils/progressBar";
 import { confirm } from "../utils/questions";
 
+// used to be 25, now is just 12
+const DAYS = 12;
+
 export default async (): Promise<void> => {
   const year = new Date().getFullYear().toString();
 
@@ -25,10 +28,11 @@ export default async (): Promise<void> => {
   ]);
 
   const blocks: BlockRecord[] = [];
-  const tasksProgress = startProgressBar("Creating Tasks", 125);
-  for (let day = 1; day <= 25; day++) {
+  // 5 items for each day
+  const tasksProgress = startProgressBar("Creating Tasks", DAYS * 5);
+  for (let day = 1; day <= DAYS; day++) {
     const dayId = await createIssue(
-      `Day ${day}`,
+      `Day ${day} (${year})`,
       [LABEL_IDS.initiative, LABEL_IDS.adventOfCode],
       { parentId: rootId }
     );
