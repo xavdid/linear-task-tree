@@ -11,7 +11,10 @@ export default async (): Promise<void> => {
   const year = new Date().getFullYear().toString();
 
   if (
-    !(await confirm(`Creating full AoC structure for ${year}. Proceed?`, false))
+    !(await confirm(
+      `Creating full AoC structure for ${year} (${DAYS} days). Proceed?`,
+      false
+    ))
   ) {
     process.exit(1);
   }
